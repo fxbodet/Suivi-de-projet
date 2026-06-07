@@ -20,7 +20,8 @@
     "export:documents-csv": "tsx src/scripts/exportDocumentsCsv.ts",
     "export:lots-html": "tsx src/scripts/exportLotsHtml.ts",
     "export:intervenants-html": "tsx src/scripts/exportIntervenantsHtml.ts",
-    "export:actions-html": "tsx src/scripts/exportActionsHtml.ts"
+    "export:actions-html": "tsx src/scripts/exportActionsHtml.ts",
+    "export:documents-html": "tsx src/scripts/exportDocumentsHtml.ts"
   },
   "devDependencies": {
     "tsx": "^4.20.3",

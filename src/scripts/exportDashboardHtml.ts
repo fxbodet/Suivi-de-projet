@@ -45,6 +45,15 @@ function main() {
       )
       .join("");
 
+    const quickLinks = `
+      <div class="quick-links">
+        <a href="./lots.html">Voir les lots</a>
+        <a href="./validation.html">Voir la validation</a>
+        <a href="./intervenants.html">Voir les intervenants</a>
+        <a href="./actions.html">Voir les actions</a>
+        <a href="./documents.html">Voir les documents</a>
+      </div>`;
+
     const html = `<!DOCTYPE html>
 <html lang="fr">
   <head>
@@ -67,12 +76,19 @@ function main() {
         gap: 12px;
         flex-wrap: wrap;
       }
-      .nav a {
+      .nav a, .quick-links a {
         text-decoration: none;
         color: white;
         background: #2563eb;
         padding: 10px 14px;
         border-radius: 8px;
+        display: inline-block;
+      }
+      .quick-links {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 12px;
       }
       .card {
         background: white;
@@ -125,6 +141,7 @@ function main() {
       <a href="./validation.html">Validation</a>
       <a href="./intervenants.html">Intervenants</a>
       <a href="./actions.html">Actions</a>
+      <a href="./documents.html">Documents</a>
     </nav>
 
     <div class="card">
@@ -134,6 +151,7 @@ function main() {
       <div class="metric"><strong>Type :</strong> ${summary.projectType}</div>
       <div class="metric"><strong>Budget prévu HT :</strong> ${formatCurrency(summary.budgetPrevuHt)}</div>
       <div class="metric"><strong>Projet valide :</strong> <span class="${validation.isValid ? "badge-ok" : "badge-ko"}">${validation.isValid ? "Oui" : "Non"}</span></div>
+      ${quickLinks}
     </div>
 
     <div class="card">

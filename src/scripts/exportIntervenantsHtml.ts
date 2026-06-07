@@ -100,6 +100,7 @@ function main() {
       <a href="./validation.html">Validation</a>
       <a href="./intervenants.html">Intervenants</a>
       <a href="./actions.html">Actions</a>
+      <a href="./documents.html">Documents</a>
     </nav>
 
     <div class="card">
