@@ -1,4 +1,5 @@
 import { ValidationIssue } from "../validation/validateRelations";
+import { divider } from "./formatters";
 
 function groupIssuesByScope(issues: ValidationIssue[]): Map<string, ValidationIssue[]> {
   const groups = new Map<string, ValidationIssue[]>();
@@ -13,7 +14,7 @@ function groupIssuesByScope(issues: ValidationIssue[]): Map<string, ValidationIs
 }
 
 function renderSection(title: string, issues: ValidationIssue[]): string[] {
-  const lines = [`=== ${title} (${issues.length}) ===`];
+  const lines = [divider(72, "="), `${title.toUpperCase()} (${issues.length})`, divider(72, "=")];
 
   if (issues.length === 0) {
     lines.push("Aucune entrée.");
@@ -25,6 +26,7 @@ function renderSection(title: string, issues: ValidationIssue[]): string[] {
   grouped.forEach((scopeIssues, scope) => {
     lines.push("");
     lines.push(`[${scope}]`);
+    lines.push(divider(40));
     scopeIssues.forEach((issue, index) => {
       lines.push(`${index + 1}. ${issue.message}`);
     });
