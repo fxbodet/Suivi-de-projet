@@ -61,6 +61,19 @@ function main() {
       h1, h2 {
         color: #0f172a;
       }
+      .nav {
+        margin-bottom: 20px;
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .nav a {
+        text-decoration: none;
+        color: white;
+        background: #2563eb;
+        padding: 10px 14px;
+        border-radius: 8px;
+      }
       .card {
         background: white;
         padding: 20px;
@@ -105,6 +118,14 @@ function main() {
   </head>
   <body>
     <h1>Tableau de bord projet</h1>
+
+    <nav class="nav">
+      <a href="./dashboard.html">Dashboard</a>
+      <a href="./lots.html">Lots</a>
+      <a href="./validation.html">Validation</a>
+      <a href="./intervenants.html">Intervenants</a>
+      <a href="./actions.html">Actions</a>
+    </nav>
 
     <div class="card">
       <h2>Projet</h2>

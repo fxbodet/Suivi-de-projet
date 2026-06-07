@@ -18,7 +18,9 @@
     "export:validation-html": "tsx src/scripts/exportValidationHtml.ts",
     "export:actions-csv": "tsx src/scripts/exportActionsCsv.ts",
     "export:documents-csv": "tsx src/scripts/exportDocumentsCsv.ts",
-    "export:lots-html": "tsx src/scripts/exportLotsHtml.ts"
+    "export:lots-html": "tsx src/scripts/exportLotsHtml.ts",
+    "export:intervenants-html": "tsx src/scripts/exportIntervenantsHtml.ts",
+    "export:actions-html": "tsx src/scripts/exportActionsHtml.ts"
   },
   "devDependencies": {
     "tsx": "^4.20.3",
