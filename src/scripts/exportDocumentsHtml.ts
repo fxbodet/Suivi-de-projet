@@ -32,49 +32,7 @@ function main() {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Documents projet</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        margin: 32px;
-        background: #f8fafc;
-        color: #1e293b;
-      }
-      h1 {
-        color: #0f172a;
-      }
-      .nav {
-        margin-bottom: 20px;
-        display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
-      }
-      .nav a {
-        text-decoration: none;
-        color: white;
-        background: #2563eb;
-        padding: 10px 14px;
-        border-radius: 8px;
-      }
-      .card {
-        background: white;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-      }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 12px;
-      }
-      th, td {
-        border-bottom: 1px solid #ddd;
-        text-align: left;
-        padding: 10px;
-      }
-      th {
-        background: #e2e8f0;
-      }
-    </style>
+    <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
     <h1>Documents projet</h1>
@@ -86,10 +44,11 @@ function main() {
       <a href="./intervenants.html">Intervenants</a>
       <a href="./actions.html">Actions</a>
       <a href="./documents.html">Documents</a>
+      <a href="./finances.html">Finances</a>
     </nav>
 
     <div class="card">
-      <table>
+      <table class="table">
         <thead>
           <tr>
             <th>Document_ID</th>
