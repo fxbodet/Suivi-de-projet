@@ -11,7 +11,9 @@
     "validation:data": "tsx src/scripts/validationView.ts",
     "export:summary": "tsx src/scripts/exportSummaryJson.ts",
     "export:validation": "tsx src/scripts/exportValidationJson.ts",
-    "export:dashboard-html": "tsx src/scripts/exportDashboardHtml.ts"
+    "export:dashboard-html": "tsx src/scripts/exportDashboardHtml.ts",
+    "export:lots-csv": "tsx src/scripts/exportLotsCsv.ts",
+    "export:validation-csv": "tsx src/scripts/exportValidationCsv.ts"
   },
   "devDependencies": {
     "tsx": "^4.20.3",

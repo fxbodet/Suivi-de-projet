@@ -13,6 +13,53 @@ function groupIssuesByScope(issues: ValidationIssue[]): Map<string, ValidationIs
   return groups;
 }
 
+function parseArgs(args: string[]) {
+  const options = {
+    severity: undefined as "error" | "warning" | undefined,
+    scope: undefined as string | undefined,
+    search: undefined as string | undefined,
+  };
+
+  args.forEach((arg) => {
+    if (arg.startsWith("--severity=")) {
+      const value = arg.split("=")[1];
+      if (value === "error" || value === "warning") {
+        options.severity = value;
+      }
+    }
+
+    if (arg.startsWith("--scope=")) {
+      options.scope = arg.split("=")[1];
+    }
+
+    if (arg.startsWith("--search=")) {
+      options.search = arg.split("=").slice(1).join("=").toLowerCase();
+    }
+  });
+
+  return options;
+}
+
+function filterIssues(issues: ValidationIssue[], args: string[]): ValidationIssue[] {
+  const options = parseArgs(args);
+
+  return issues.filter((issue) => {
+    if (options.severity && issue.severity !== options.severity) {
+      return false;
+    }
+
+    if (options.scope && issue.scope !== options.scope) {
+      return false;
+    }
+
+    if (options.search && !issue.message.toLowerCase().includes(options.search)) {
+      return false;
+    }
+
+    return true;
+  });
+}
+
 function renderSection(title: string, issues: ValidationIssue[]): string[] {
   const lines = [divider(72, "="), `${title.toUpperCase()} (${issues.length})`, divider(72, "=")];
 
@@ -35,9 +82,10 @@ function renderSection(title: string, issues: ValidationIssue[]): string[] {
   return lines;
 }
 
-export function renderValidationView(issues: ValidationIssue[]): string {
-  const errors = issues.filter((issue) => issue.severity === "error");
-  const warnings = issues.filter((issue) => issue.severity === "warning");
+export function renderValidationView(issues: ValidationIssue[], args: string[] = []): string {
+  const filtered = filterIssues(issues, args);
+  const errors = filtered.filter((issue) => issue.severity === "error");
+  const warnings = filtered.filter((issue) => issue.severity === "warning");
 
   return [
     ...renderSection("Erreurs", errors),

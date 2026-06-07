@@ -11,7 +11,7 @@ function main() {
     const data = loadProjectData(basePath);
     const validation = validateProjectData(data);
 
-    console.log(renderValidationView(validation.issues));
+    console.log(renderValidationView(validation.issues, process.argv.slice(2)));
   } catch (error) {
     console.error("Erreur lors de la génération de la vue validation.");
     console.error(error);
