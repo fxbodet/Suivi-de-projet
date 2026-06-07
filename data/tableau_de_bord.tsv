@@ -1,0 +1,6 @@
+Indicateur	Valeur	Unite	Categorie	Commentaire
+Avancement_Projet	0	%	Projet	Initialisation
+Avancement_Planning	0	%	Planning	Initialisation
+Budget_Engage	0	EUR	Finance	Initialisation
+Reste_A_Regler	0	EUR	Finance	Initialisation
+Actions_En_Retard	0	nb	Chantier	Initialisation

@@ -1,0 +1,2 @@
+Facture_ID	Projet_ID	Client	Type_Facturation	Phase_ID	Reference_Facture	Date_Facture	Date_Echeance	Montant_HT	TVA	Montant_TTC	Montant_Regle	Date_Reglement	Reste_Du	Statut_Facture	Commentaire
+FAC-001	PRJ-001	SCI Johana Godard Jouen	HONORAIRES	PH-ESQ				0	0.2	0	0		0	PREVU	
