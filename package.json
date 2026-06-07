@@ -1,0 +1,13 @@
+{
+  "name": "suivi-de-projet",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check:data": "tsx src/scripts/checkProjectData.ts"
+  },
+  "devDependencies": {
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3"
+  }
+}
