@@ -5,7 +5,10 @@
   "type": "module",
   "scripts": {
     "check:data": "tsx src/scripts/checkProjectData.ts",
-    "summary:data": "tsx src/scripts/projectSummary.ts"
+    "summary:data": "tsx src/scripts/projectSummary.ts",
+    "dashboard:data": "tsx src/scripts/dashboard.ts",
+    "lots:data": "tsx src/scripts/lotsView.ts",
+    "validation:data": "tsx src/scripts/validationView.ts"
   },
   "devDependencies": {
     "tsx": "^4.20.3",
