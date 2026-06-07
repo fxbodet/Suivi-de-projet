@@ -3,6 +3,13 @@ import path from "node:path";
 
 import { loadProjectData } from "../import/loadProjectData";
 
+function lotStatusClass(status: string): string {
+  const normalized = status.toLowerCase();
+  if (normalized.includes("termin") || normalized.includes("valid")) return "status status-ok";
+  if (normalized.includes("attente") || normalized.includes("progress") || normalized.includes("cours")) return "status status-warn";
+  return "status status-ko";
+}
+
 function formatCurrency(value: number): string {
   return new Intl.NumberFormat("fr-FR", {
     style: "currency",
@@ -27,7 +34,7 @@ function main() {
             <td>${lot.Lot_ID}</td>
             <td>${lot.Nom_Lot}</td>
             <td>${lot.Entreprise_Attributaire}</td>
-            <td>${lot.Statut_Lot}</td>
+            <td><span class="${lotStatusClass(lot.Statut_Lot)}">${lot.Statut_Lot}</span></td>
             <td>${lot.Avancement_Pourcent}%</td>
             <td>${formatCurrency(lot.Montant_Marche_HT)}</td>
             <td>${formatCurrency(lot.Montant_Marche_TTC)}</td>
@@ -47,6 +54,7 @@ function main() {
     <h1>Liste des lots</h1>
 
     <nav class="nav">
+      <a href="./index.html">Accueil</a>
       <a href="./dashboard.html">Dashboard</a>
       <a href="./lots.html">Lots</a>
       <a href="./validation.html">Validation</a>
