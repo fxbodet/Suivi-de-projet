@@ -3,34 +3,40 @@ export type YesNo = "Oui" | "Non";
 export interface Projet {
   Projet_ID: string;
   Nom_Projet: string;
-  Description: string;
+  Operation: string;
   Adresse: string;
-  Ville: string;
   Code_Postal: string;
+  Ville: string;
+  Parcelle: string;
+  Zone_PLU: string;
   Maitre_Ouvrage: string;
-  Moe: string;
+  MOE: string;
+  Type_ERP: string;
+  Categorie_ERP: string;
+  Surface: string;
   Date_Debut: string;
   Date_Fin_Prevue: string;
+  Date_Fin_Reelle: string;
   Budget_Prevu_HT: number;
-  Statut_Projet: string;
-  Type_Projet: string;
-  ERP: string;
+  Budget_Prevu_TTC: number;
+  Commentaire: string;
 }
 
 export interface PhaseMop {
   Phase_ID: string;
   Projet_ID: string;
-  Ordre: number;
   Code_Phase: string;
-  Nom_Phase: string;
-  Description: string;
+  Libelle_Phase: string;
+  Ordre_Phase: number;
   Date_Debut_Prevue: string;
   Date_Fin_Prevue: string;
   Date_Debut_Reelle: string;
   Date_Fin_Reelle: string;
-  Statut_Phase: string;
-  Livrable_Principal: string;
-  Validation_MOA: YesNo;
+  Statut: string;
+  Responsable: string;
+  Taux_Avancement: number;
+  Validation_Client: YesNo;
+  Commentaire: string;
 }
 
 export interface Lot {
@@ -58,18 +64,23 @@ export interface PlanningTask {
   Projet_ID: string;
   Phase_ID: string;
   Lot_ID: string;
+  Type_Tache: string;
   Nom_Tache: string;
   Description: string;
+  Responsable: string;
   Date_Debut_Prevue: string;
   Date_Fin_Prevue: string;
+  Duree_Prevue_Jours: number;
   Date_Debut_Reelle: string;
   Date_Fin_Reelle: string;
-  Duree_Jours: number;
+  Duree_Reelle_Jours: number;
+  Avancement_Pourcent: number;
   Statut_Tache: string;
   Priorite: string;
-  Dependance: string;
+  Dependance_Tache_ID: string;
   Jalon: YesNo;
-  Responsable: string;
+  Chemin_Critique: YesNo;
+  Retard_Jours: number;
   Commentaire: string;
 }
 

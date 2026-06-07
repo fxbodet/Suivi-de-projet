@@ -79,8 +79,7 @@ function main() {
     <div class="card">
       <h2>Projet</h2>
       <div class="metric"><strong>Nom :</strong> ${summary.projectName}</div>
-      <div class="metric"><strong>Statut :</strong> ${summary.projectStatus}</div>
-      <div class="metric"><strong>Type :</strong> ${summary.projectType}</div>
+      <div class="metric"><strong>Opération :</strong> ${summary.projectOperation}</div>
       <div class="metric"><strong>Budget prévu HT :</strong> ${formatCurrency(summary.budgetPrevuHt)}</div>
       <div class="metric"><strong>Projet valide :</strong> <span class="${validation.isValid ? "badge-ok" : "badge-ko"}">${validation.isValid ? "Oui" : "Non"}</span></div>
       ${quickLinks}

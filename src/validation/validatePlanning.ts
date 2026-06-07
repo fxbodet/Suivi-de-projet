@@ -83,10 +83,10 @@ export function validatePlanning(data: ProjectDataBundle): ValidationIssue[] {
       });
     }
 
-    if (item.Duree_Jours < 0) {
+    if (item.Duree_Prevue_Jours < 0) {
       issues.push({
         scope: `planning:${item.Tache_ID}`,
-        message: `Duree_Jours négative`,
+        message: `Duree_Prevue_Jours négative`,
         severity: "error",
       });
     }

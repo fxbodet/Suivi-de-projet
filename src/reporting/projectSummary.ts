@@ -2,8 +2,7 @@ import { ProjectDataBundle } from "../domain/types";
 
 export interface ProjectSummary {
   projectName: string;
-  projectStatus: string;
-  projectType: string;
+  projectOperation: string;
   budgetPrevuHt: number;
   projectCount: number;
   phaseCount: number;
@@ -35,8 +34,7 @@ export function buildProjectSummary(data: ProjectDataBundle): ProjectSummary {
 
   return {
     projectName: mainProject?.Nom_Projet ?? "",
-    projectStatus: mainProject?.Statut_Projet ?? "",
-    projectType: mainProject?.Type_Projet ?? "",
+    projectOperation: mainProject?.Operation ?? "",
     budgetPrevuHt: mainProject?.Budget_Prevu_HT ?? 0,
     projectCount: data.projet.length,
     phaseCount: data.phases_mop.length,

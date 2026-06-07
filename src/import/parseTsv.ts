@@ -31,8 +31,8 @@ export function parseTsv(content: string): TsvRow[] {
   });
 }
 
-export function toNumber(value: string): number {
-  if (value === "") {
+export function toNumber(value: string | undefined): number {
+  if (!value || value === "") {
     return 0;
   }
 
@@ -46,12 +46,12 @@ export function toNumber(value: string): number {
   return parsed;
 }
 
-export function toYesNo(value: string): "Oui" | "Non" {
+export function toYesNo(value: string | undefined): "Oui" | "Non" {
   if (value === "Oui" || value === "Non") {
     return value;
   }
 
-  if (value === "") {
+  if (!value || value === "") {
     return "Non";
   }
 
