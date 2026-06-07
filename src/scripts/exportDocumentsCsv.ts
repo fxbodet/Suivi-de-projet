@@ -21,22 +21,22 @@ function main() {
     const headers = [
       "Document_ID",
       "Lot_ID",
-      "Nom_Document",
+      "Reference",
       "Type_Document",
       "Date_Document",
       "Version",
-      "Statut_Document",
+      "Statut_Validation",
     ];
 
     const rows = data.documents.map((document) =>
       [
         document.Document_ID,
         document.Lot_ID,
-        document.Nom_Document,
+        document.Reference,
         document.Type_Document,
         document.Date_Document,
         document.Version,
-        document.Statut_Document,
+        document.Statut_Validation,
       ]
         .map(escapeCsv)
         .join(";")

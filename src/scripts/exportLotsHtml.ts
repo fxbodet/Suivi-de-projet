@@ -32,8 +32,8 @@ function main() {
         (lot) => `
           <tr>
             <td>${lot.Lot_ID}</td>
-            <td>${lot.Nom_Lot}</td>
-            <td>${lot.Entreprise_Attributaire}</td>
+            <td>${lot.Designation_Lot}</td>
+            <td>${lot.Entreprise_ID}</td>
             <td><span class="${lotStatusClass(lot.Statut_Lot)}">${lot.Statut_Lot}</span></td>
             <td>${lot.Avancement_Pourcent}%</td>
             <td>${formatCurrency(lot.Montant_Marche_HT)}</td>

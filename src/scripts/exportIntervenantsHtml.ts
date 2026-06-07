@@ -3,12 +3,12 @@ import path from "node:path";
 
 import { loadProjectData } from "../import/loadProjectData";
 
-function badgeClass(actif: boolean): string {
-  return actif ? "badge-ok" : "badge-ko";
+function badgeClass(actif: string): string {
+  return actif === "Oui" ? "badge-ok" : "badge-ko";
 }
 
-function badgeLabel(actif: boolean): string {
-  return actif ? "Actif" : "Inactif";
+function badgeLabel(actif: string): string {
+  return actif === "Oui" ? "Actif" : "Inactif";
 }
 
 function main() {
@@ -24,8 +24,8 @@ function main() {
         (intervenant) => `
           <tr>
             <td>${intervenant.Intervenant_ID}</td>
-            <td>${intervenant.Nom_Intervenant}</td>
-            <td>${intervenant.Role_Intervenant}</td>
+            <td>${intervenant.Raison_Sociale}</td>
+            <td>${intervenant.Fonction}</td>
             <td>${intervenant.Email}</td>
             <td>${intervenant.Telephone}</td>
             <td><span class="${badgeClass(intervenant.Actif)}">${badgeLabel(intervenant.Actif)}</span></td>
