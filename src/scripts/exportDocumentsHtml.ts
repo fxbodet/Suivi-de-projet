@@ -3,6 +3,13 @@ import path from "node:path";
 
 import { loadProjectData } from "../import/loadProjectData";
 
+function documentStatusClass(status: string): string {
+  const normalized = status.toLowerCase();
+  if (normalized.includes("valid") || normalized.includes("approuv") || normalized.includes("diffus")) return "status status-ok";
+  if (normalized.includes("attente") || normalized.includes("revue") || normalized.includes("cours")) return "status status-warn";
+  return "status status-ko";
+}
+
 function main() {
   const basePath = path.resolve(process.cwd());
   const outputDir = path.join(basePath, "output");
@@ -21,7 +28,7 @@ function main() {
             <td>${document.Type_Document}</td>
             <td>${document.Date_Document}</td>
             <td>${document.Version}</td>
-            <td>${document.Statut_Document}</td>
+            <td><span class="${documentStatusClass(document.Statut_Document)}">${document.Statut_Document}</span></td>
           </tr>`
       )
       .join("");
