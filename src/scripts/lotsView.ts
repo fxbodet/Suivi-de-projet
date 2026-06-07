@@ -8,7 +8,7 @@ function main() {
 
   try {
     const data = loadProjectData(basePath);
-    console.log(renderLotsView(data.lots));
+    console.log(renderLotsView(data.lots, process.argv.slice(2)));
   } catch (error) {
     console.error("Erreur lors de la génération de la vue lots.");
     console.error(error);
