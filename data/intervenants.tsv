@@ -1,0 +1,3 @@
+Intervenant_ID	Projet_ID	Type_Intervenant	Raison_Sociale	Contact	Fonction	Email	Telephone	Adresse	SIRET	Assurance	Lot_ID	Actif	Commentaire
+INT-001	PRJ-001	MAITRE_OUVRAGE	SCI Johana Godard Jouen									Oui	Maître d'ouvrage du projet
+INT-002	PRJ-001	MOE	MIA Studio									Oui	Maîtrise d'œuvre du projet
