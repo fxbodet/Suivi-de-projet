@@ -1,0 +1,9 @@
+Phase_ID	Projet_ID	Code_Phase	Libelle_Phase	Ordre_Phase	Date_Debut_Prevue	Date_Fin_Prevue	Date_Debut_Reelle	Date_Fin_Reelle	Statut	Responsable	Taux_Avancement	Validation_Client	Commentaire
+PH-ESQ	PRJ-001	ESQ	Esquisse	1					PREVU		0	Non	
+PH-APS	PRJ-001	APS	Avant-Projet Sommaire	2					PREVU		0	Non	
+PH-APD	PRJ-001	APD	Avant-Projet Définitif	3					PREVU		0	Non	
+PH-PRO	PRJ-001	PRO	Études de Projet	4					PREVU		0	Non	
+PH-ACT	PRJ-001	ACT	Assistance passation contrats travaux	5					PREVU		0	Non	
+PH-VISA	PRJ-001	VISA	Visa	6					PREVU		0	Non	
+PH-DET	PRJ-001	DET	Direction exécution travaux	7					PREVU		0	Non	
+PH-AOR	PRJ-001	AOR	Assistance opérations réception	8					PREVU		0	Non	
