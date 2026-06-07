@@ -1,4 +1,6 @@
 import { ProjectDataBundle } from "../domain/types";
+import { validateDuplicates } from "./validateDuplicates";
+import { validateEnums } from "./validateEnums";
 import { validateFinance } from "./validateFinance";
 import { validatePlanning } from "./validatePlanning";
 import { ValidationIssue, validateRelations } from "./validateRelations";
@@ -15,6 +17,8 @@ export function validateProjectData(data: ProjectDataBundle): ValidationReport {
     ...validateRelations(data),
     ...validateFinance(data),
     ...validatePlanning(data),
+    ...validateDuplicates(data),
+    ...validateEnums(data),
   ];
 
   const errorCount = issues.filter((issue) => issue.severity === "error").length;
