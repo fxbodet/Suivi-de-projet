@@ -52,6 +52,7 @@ function main() {
         <a href="./intervenants.html">Voir les intervenants</a>
         <a href="./actions.html">Voir les actions</a>
         <a href="./documents.html">Voir les documents</a>
+        <a href="./finances.html">Voir les finances</a>
       </div>`;
 
     const html = `<!DOCTYPE html>
@@ -60,77 +61,7 @@ function main() {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tableau de bord projet</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        margin: 32px;
-        background: #f7f7f7;
-        color: #222;
-      }
-      h1, h2 {
-        color: #0f172a;
-      }
-      .nav {
-        margin-bottom: 20px;
-        display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
-      }
-      .nav a, .quick-links a {
-        text-decoration: none;
-        color: white;
-        background: #2563eb;
-        padding: 10px 14px;
-        border-radius: 8px;
-        display: inline-block;
-      }
-      .quick-links {
-        display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
-        margin-top: 12px;
-      }
-      .card {
-        background: white;
-        padding: 20px;
-        border-radius: 10px;
-        margin-bottom: 20px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-      }
-      .grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-        gap: 16px;
-      }
-      .metric {
-        font-size: 1.05rem;
-        margin: 8px 0;
-      }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 12px;
-      }
-      th, td {
-        border-bottom: 1px solid #ddd;
-        text-align: left;
-        padding: 10px;
-      }
-      th {
-        background: #f1f5f9;
-      }
-      ul {
-        padding-left: 20px;
-      }
-      .badge-ok {
-        color: #166534;
-        font-weight: bold;
-      }
-      .badge-ko {
-        color: #991b1b;
-        font-weight: bold;
-      }
-    </style>
+    <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
     <h1>Tableau de bord projet</h1>
@@ -142,6 +73,7 @@ function main() {
       <a href="./intervenants.html">Intervenants</a>
       <a href="./actions.html">Actions</a>
       <a href="./documents.html">Documents</a>
+      <a href="./finances.html">Finances</a>
     </nav>
 
     <div class="card">
@@ -152,6 +84,28 @@ function main() {
       <div class="metric"><strong>Budget prévu HT :</strong> ${formatCurrency(summary.budgetPrevuHt)}</div>
       <div class="metric"><strong>Projet valide :</strong> <span class="${validation.isValid ? "badge-ok" : "badge-ko"}">${validation.isValid ? "Oui" : "Non"}</span></div>
       ${quickLinks}
+    </div>
+
+    <div class="card">
+      <h2>Indicateurs visuels</h2>
+      <div class="grid">
+        <div class="kpi">
+          <div class="kpi-title">Lots</div>
+          <div class="kpi-value">${summary.lotCount}</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-title">Actions chantier</div>
+          <div class="kpi-value">${summary.actionCount}</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-title">Documents</div>
+          <div class="kpi-value">${summary.documentCount}</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-title">Erreurs</div>
+          <div class="kpi-value">${validation.errorCount}</div>
+        </div>
+      </div>
     </div>
 
     <div class="card">
@@ -181,7 +135,7 @@ function main() {
 
     <div class="card">
       <h2>Lots</h2>
-      <table>
+      <table class="table">
         <thead>
           <tr>
             <th>Lot_ID</th>
@@ -198,7 +152,7 @@ function main() {
 
     <div class="card">
       <h2>Top alertes</h2>
-      <ul>${issuesRows || "<li>Aucune alerte.</li>"}</ul>
+      <ul class="list">${issuesRows || "<li>Aucune alerte.</li>"}</ul>
     </div>
   </body>
 </html>`;

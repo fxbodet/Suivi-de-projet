@@ -1,0 +1,107 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 32px;
+  background: #f8fafc;
+  color: #1e293b;
+}
+
+h1, h2 {
+  color: #0f172a;
+}
+
+.nav {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.nav a,
+.quick-links a {
+  text-decoration: none;
+  color: white;
+  background: #2563eb;
+  padding: 10px 14px;
+  border-radius: 8px;
+  display: inline-block;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.metric {
+  font-size: 1.05rem;
+  margin: 8px 0;
+}
+
+.quick-links {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+}
+
+.table th,
+.table td {
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+  padding: 10px;
+}
+
+.table th {
+  background: #e2e8f0;
+}
+
+.list {
+  padding-left: 20px;
+}
+
+.list li {
+  margin-bottom: 10px;
+}
+
+.badge-ok {
+  color: #166534;
+  font-weight: bold;
+}
+
+.badge-ko {
+  color: #991b1b;
+  font-weight: bold;
+}
+
+.kpi {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.kpi-title {
+  font-size: 0.95rem;
+  color: #334155;
+  margin-bottom: 6px;
+}
+
+.kpi-value {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #0f172a;
+}
