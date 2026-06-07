@@ -17,11 +17,11 @@ function main() {
           <tr>
             <td>${document.Document_ID}</td>
             <td>${document.Lot_ID}</td>
-            <td>${document.Nom_Document}</td>
+            <td>${document.Reference}</td>
             <td>${document.Type_Document}</td>
             <td>${document.Date_Document}</td>
             <td>${document.Version}</td>
-            <td>${document.Statut_Document}</td>
+            <td>${document.Statut_Validation}</td>
           </tr>`
       )
       .join("");

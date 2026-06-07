@@ -21,19 +21,19 @@ function main() {
     const headers = [
       "Action_ID",
       "Lot_ID",
-      "Titre_Action",
       "Description_Action",
+      "Responsable",
       "Statut_Action",
       "Priorite",
       "Date_Echeance",
     ];
 
-    const rows = data.actions.map((action) =>
+    const rows = data.actions_chantier.map((action) =>
       [
         action.Action_ID,
         action.Lot_ID,
-        action.Titre_Action,
         action.Description_Action,
+        action.Responsable,
         action.Statut_Action,
         action.Priorite,
         action.Date_Echeance,

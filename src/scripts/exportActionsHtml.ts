@@ -11,13 +11,13 @@ function main() {
   try {
     const data = loadProjectData(basePath);
 
-    const rows = data.actions
+    const rows = data.actions_chantier
       .map(
         (action) => `
           <tr>
             <td>${action.Action_ID}</td>
             <td>${action.Lot_ID}</td>
-            <td>${action.Titre_Action}</td>
+            <td>${action.Description_Action}</td>
             <td>${action.Statut_Action}</td>
             <td>${action.Priorite}</td>
             <td>${action.Date_Echeance}</td>
@@ -52,7 +52,7 @@ function main() {
           <tr>
             <th>Action_ID</th>
             <th>Lot_ID</th>
-            <th>Titre</th>
+            <th>Description</th>
             <th>Statut</th>
             <th>Priorité</th>
             <th>Échéance</th>

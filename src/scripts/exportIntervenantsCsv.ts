@@ -18,13 +18,13 @@ function main() {
 
   try {
     const data = loadProjectData(basePath);
-    const headers = ["Intervenant_ID", "Nom", "Role", "Email", "Telephone", "Actif"];
+    const headers = ["Intervenant_ID", "Raison_Sociale", "Fonction", "Email", "Telephone", "Actif"];
 
     const rows = data.intervenants.map((intervenant) =>
       [
         intervenant.Intervenant_ID,
-        intervenant.Nom_Intervenant,
-        intervenant.Role_Intervenant,
+        intervenant.Raison_Sociale,
+        intervenant.Fonction,
         intervenant.Email,
         intervenant.Telephone,
         intervenant.Actif,

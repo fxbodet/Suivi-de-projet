@@ -1,4 +1,4 @@
-import { LotRow } from "../domain/types";
+import { Lot } from "../domain/types";
 import { divider, formatCurrency, pad } from "./formatters";
 
 function parseArgs(args: string[]) {
@@ -26,12 +26,12 @@ function parseArgs(args: string[]) {
   return options;
 }
 
-function sortLots(lots: LotRow[], args: string[]): LotRow[] {
+function sortLots(lots: Lot[], args: string[]): Lot[] {
   const options = parseArgs(args);
   const sorted = [...lots];
 
   if (options.sort === "nom") {
-    sorted.sort((a, b) => a.Nom_Lot.localeCompare(b.Nom_Lot, "fr"));
+    sorted.sort((a, b) => a.Designation_Lot.localeCompare(b.Designation_Lot, "fr"));
   }
 
   if (options.sort === "montant") {
@@ -49,7 +49,7 @@ function sortLots(lots: LotRow[], args: string[]): LotRow[] {
   return sorted;
 }
 
-export function renderLotsView(lots: LotRow[], args: string[] = []): string {
+export function renderLotsView(lots: Lot[], args: string[] = []): string {
   const displayedLots = sortLots(lots, args);
   const lines = [
     divider(120, "="),
@@ -62,7 +62,7 @@ export function renderLotsView(lots: LotRow[], args: string[] = []): string {
 
   displayedLots.forEach((lot) => {
     lines.push(
-      `${pad(lot.Lot_ID, 12)} ${pad(lot.Nom_Lot, 28)} ${pad(lot.Entreprise_Attributaire, 24)} ${pad(lot.Statut_Lot, 16)} ${pad(`${lot.Avancement_Pourcent}%`, 12)} ${formatCurrency(lot.Montant_Marche_HT)}`
+      `${pad(lot.Lot_ID, 12)} ${pad(lot.Designation_Lot, 28)} ${pad(lot.Entreprise_ID, 24)} ${pad(lot.Statut_Lot, 16)} ${pad(`${lot.Avancement_Pourcent}%`, 12)} ${formatCurrency(lot.Montant_Marche_HT)}`
     );
   });
 

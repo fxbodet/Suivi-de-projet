@@ -20,8 +20,8 @@ function main() {
     const data = loadProjectData(basePath);
     const headers = [
       "Lot_ID",
-      "Nom_Lot",
-      "Entreprise_Attributaire",
+      "Designation_Lot",
+      "Entreprise_ID",
       "Statut_Lot",
       "Avancement_Pourcent",
       "Montant_Marche_HT",
@@ -31,8 +31,8 @@ function main() {
     const rows = data.lots.map((lot) =>
       [
         lot.Lot_ID,
-        lot.Nom_Lot,
-        lot.Entreprise_Attributaire,
+        lot.Designation_Lot,
+        lot.Entreprise_ID,
         lot.Statut_Lot,
         lot.Avancement_Pourcent,
         lot.Montant_Marche_HT,
