@@ -1,0 +1,8 @@
+Tache_ID	Projet_ID	Phase_ID	Lot_ID	Type_Tache	Nom_Tache	Description	Responsable	Date_Debut_Prevue	Date_Fin_Prevue	Duree_Prevue_Jours	Date_Debut_Reelle	Date_Fin_Reelle	Duree_Reelle_Jours	Avancement_Pourcent	Statut_Tache	Priorite	Dependance_Tache_ID	Jalon	Chemin_Critique	Retard_Jours	Commentaire
+T-001	PRJ-001	PH-ESQ		ETUDE	Lancement projet	Cadrage initial du projet				0			0	0	PREVU	HAUTE		OUI	OUI	0	
+T-002	PRJ-001	PH-APS		ETUDE	APS	Production APS				0			0	0	PREVU	HAUTE	T-001	OUI	OUI	0	
+T-003	PRJ-001	PH-APD		ETUDE	APD	Production APD				0			0	0	PREVU	HAUTE	T-002	OUI	OUI	0	
+T-004	PRJ-001	PH-PRO		ETUDE	PRO	CCTP CCAP DQE				0			0	0	PREVU	HAUTE	T-003	OUI	OUI	0	
+T-005	PRJ-001	PH-ACT		CONSULTATION	Consultation entreprises	Lancement consultation				0			0	0	PREVU	HAUTE	T-004	OUI	OUI	0	
+T-006	PRJ-001	PH-DET		CHANTIER	Démarrage chantier	Ordre de service démarrage				0			0	0	PREVU	HAUTE	T-005	OUI	OUI	0	
+T-007	PRJ-001	PH-AOR		RECEPTION	Réception des travaux	Réception et réserves				0			0	0	PREVU	HAUTE	T-006	OUI	OUI	0	
