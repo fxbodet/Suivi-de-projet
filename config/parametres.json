@@ -1,0 +1,17 @@
+{
+  "statuts": ["PREVU", "EN_COURS", "BLOQUE", "TERMINE"],
+  "priorites": ["HAUTE", "MOYENNE", "BASSE"],
+  "phasesMop": ["ESQ", "APS", "APD", "PRO", "ACT", "VISA", "DET", "AOR"],
+  "typesTachePlanning": [
+    "ETUDE",
+    "VALIDATION",
+    "CONSULTATION",
+    "MARCHE",
+    "CHANTIER",
+    "REUNION",
+    "RECEPTION",
+    "RESERVE",
+    "FACTURATION"
+  ],
+  "tva": [0, 0.055, 0.1, 0.2]
+}
