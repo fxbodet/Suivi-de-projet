@@ -23,7 +23,10 @@
     "export:actions-html": "tsx src/scripts/exportActionsHtml.ts",
     "export:documents-html": "tsx src/scripts/exportDocumentsHtml.ts",
     "export:finances-html": "tsx src/scripts/exportFinancesHtml.ts",
-    "export:index-html": "tsx src/scripts/exportIndexHtml.ts"
+    "export:index-html": "tsx src/scripts/exportIndexHtml.ts",
+    "build": "npm run export:index-html && npm run export:dashboard-html && npm run export:lots-html && npm run export:validation-html && npm run export:intervenants-html && npm run export:actions-html && npm run export:documents-html && npm run export:finances-html",
+    "build:all": "npm run build && npm run export:lots-csv && npm run export:validation-csv && npm run export:intervenants-csv && npm run export:actions-csv && npm run export:documents-csv && npm run export:summary && npm run export:validation",
+    "start": "npm run build && echo \"Ouvrez output/index.html dans votre navigateur\""
   },
   "devDependencies": {
     "tsx": "^4.20.3",
