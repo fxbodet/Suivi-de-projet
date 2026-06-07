@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "check:data": "tsx src/scripts/checkProjectData.ts"
+    "check:data": "tsx src/scripts/checkProjectData.ts",
+    "summary:data": "tsx src/scripts/projectSummary.ts"
   },
   "devDependencies": {
     "tsx": "^4.20.3",
