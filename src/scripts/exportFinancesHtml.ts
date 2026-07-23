@@ -1,8 +1,11 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { loadProjectData } from "../import/loadProjectData";
-import { buildProjectSummary } from "../reporting/projectSummary";
+import { buildFinancesViewModel } from "../services/financesService";
+import { getProjectContext } from "../services/projectService";
+import { renderCard, renderKeyValueList, renderTable } from "../ui/components";
+import { renderPageLayout } from "../ui/layout";
+import { renderDashboardNavigation } from "../ui/navigation";
 
 function formatCurrency(value: number): string {
   return new Intl.NumberFormat("fr-FR", {
@@ -18,72 +21,80 @@ function main() {
   const outputFile = path.join(outputDir, "finances.html");
 
   try {
-    const data = loadProjectData(basePath);
-    const summary = buildProjectSummary(data);
+    const { data } = getProjectContext(basePath);
+    const viewModel = buildFinancesViewModel(data);
 
-    const html = `<!DOCTYPE html>
-<html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Finances projet</title>
-    <link rel="stylesheet" href="./styles.css" />
-  </head>
-  <body>
-    <h1>Finances projet</h1>
+    const summaryCard = renderCard(
+      "Résumé financier",
+      renderKeyValueList([
+        { label: "Total marchés HT", value: formatCurrency(viewModel.totalMontantMarcheHt) },
+        { label: "Total marchés TTC", value: formatCurrency(viewModel.totalMontantMarcheTtc) },
+        { label: "Total engagé HT", value: formatCurrency(viewModel.totalMontantEngageHt) },
+        { label: "Total réglé HT", value: formatCurrency(viewModel.totalMontantRegleHt) },
+        { label: "Reste à engager HT", value: formatCurrency(viewModel.totalResteAEngagerHt) },
+        { label: "Reste à régler HT", value: formatCurrency(viewModel.totalResteAReglerHt) },
+      ])
+    );
 
-    <nav class="nav">
-      <a href="./dashboard.html">Dashboard</a>
-      <a href="./lots.html">Lots</a>
-      <a href="./validation.html">Validation</a>
-      <a href="./intervenants.html">Intervenants</a>
-      <a href="./actions.html">Actions</a>
-      <a href="./documents.html">Documents</a>
-      <a href="./finances.html">Finances</a>
-    </nav>
+    const lotsFinanceCard = renderCard(
+      "Finances par lot",
+      renderTable(
+        [
+          { key: "id", header: "Lot_ID" },
+          { key: "designation", header: "Désignation" },
+          {
+            key: "montantMarcheHt",
+            header: "Marché HT",
+            render: (value) => formatCurrency(Number(value)),
+          },
+          {
+            key: "montantMarcheTtc",
+            header: "Marché TTC",
+            render: (value) => formatCurrency(Number(value)),
+          },
+          {
+            key: "montantEngageHt",
+            header: "Engagé HT",
+            render: (value) => formatCurrency(Number(value)),
+          },
+          {
+            key: "montantRegleHt",
+            header: "Réglé HT",
+            render: (value) => formatCurrency(Number(value)),
+          },
+          {
+            key: "resteAEngagerHt",
+            header: "Reste à engager HT",
+            render: (value) => formatCurrency(Number(value)),
+          },
+          {
+            key: "resteAReglerHt",
+            header: "Reste à régler HT",
+            render: (value) => formatCurrency(Number(value)),
+          },
+        ],
+        viewModel.lots,
+        "Aucune donnée financière disponible."
+      )
+    );
 
-    <div class="card">
-      <h2>Synthèse financière</h2>
-      <div class="grid">
-        <div class="kpi">
-          <div class="kpi-title">Budget prévu HT</div>
-          <div class="kpi-value">${formatCurrency(summary.budgetPrevuHt)}</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-title">Total marchés HT</div>
-          <div class="kpi-value">${formatCurrency(summary.totalMontantMarcheHt)}</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-title">Total marchés TTC</div>
-          <div class="kpi-value">${formatCurrency(summary.totalMontantMarcheTtc)}</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-title">Montant engagé HT</div>
-          <div class="kpi-value">${formatCurrency(summary.totalMontantEngageHt)}</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-title">Montant réglé HT</div>
-          <div class="kpi-value">${formatCurrency(summary.totalMontantRegleHt)}</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-title">Facturation TTC</div>
-          <div class="kpi-value">${formatCurrency(summary.totalFactureTtc)}</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-title">Facturation réglée</div>
-          <div class="kpi-value">${formatCurrency(summary.totalFactureReglee)}</div>
-        </div>
-      </div>
-    </div>
-  </body>
-</html>`;
+    const content = `
+      ${summaryCard}
+      ${lotsFinanceCard}
+    `;
+
+    const html = renderPageLayout({
+      title: "Vue finances",
+      navigation: renderDashboardNavigation("finances"),
+      content,
+    });
 
     fs.mkdirSync(outputDir, { recursive: true });
     fs.writeFileSync(outputFile, html, "utf-8");
 
     console.log(`Export HTML généré : ${outputFile}`);
   } catch (error) {
-    console.error("Erreur lors de l'export HTML des finances.");
+    console.error("Erreur lors de l'export de la vue finances HTML.");
     console.error(error);
     process.exit(1);
   }
