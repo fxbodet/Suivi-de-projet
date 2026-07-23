@@ -33,12 +33,10 @@ export function validateEnums(data: ProjectDataBundle): ValidationIssue[] {
   const documentTypes = ["NOTE", "CCTP", "CCAP", "DQE", "CR", "OS", "AVENANT", "FACTURE", "PV_RECEPTION"];
   const intervenantTypes = ["MAITRE_OUVRAGE", "MOE", "ENTREPRISE", "BET", "BUREAU_CONTROLE", "SPS", "FOURNISSEUR"];
 
-  data.projet.forEach((item) => {
-    checkAllowedValue(issues, `projet:${item.Projet_ID}`, "Statut_Projet", item.Statut_Projet, projetStatuses, "error");
-  });
+  // No enum validation for projet (no Statut_Projet in data)
 
   data.phases_mop.forEach((item) => {
-    checkAllowedValue(issues, `phases_mop:${item.Phase_ID}`, "Validation_MOA", item.Validation_MOA, yesNo, "error");
+    checkAllowedValue(issues, `phases_mop:${item.Phase_ID}`, "Validation_Client", item.Validation_Client, yesNo, "error");
   });
 
   data.planning.forEach((item) => {
