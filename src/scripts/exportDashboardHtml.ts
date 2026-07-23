@@ -1,8 +1,15 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { buildDashboardViewData } from "../services/dashboardService";
+import { buildDashboardViewModel } from "../services/dashboardService";
 import { getProjectContext } from "../services/projectService";
+import {
+  renderBadge,
+  renderCard,
+  renderKeyValueList,
+  renderLink,
+  renderTable,
+} from "../ui/components";
 import { renderPageLayout } from "../ui/layout";
 import { renderDashboardNavigation } from "../ui/navigation";
 
@@ -15,109 +22,148 @@ function formatCurrency(value: number): string {
 }
 
 function main() {
+  const basePath = path.resolve(process.cwd());
+  const outputDir = path.join(basePath, "output");
+  const outputFile = path.join(outputDir, "dashboard.html");
+
   try {
-    const { basePath, data, summary, validation } = getProjectContext();
-    const outputDir = path.join(basePath, "output");
-    const outputFile = path.join(outputDir, "dashboard.html");
-    const dashboard = buildDashboardViewData({ data, summary, validation });
+    const { data, summary, validation } = getProjectContext(basePath);
+    const viewModel = buildDashboardViewModel({ data, summary, validation });
 
-    const lotsRows = dashboard.lots
-      .map(
-        (lot) => `
-          <tr>
-            <td>${lot.lotId}</td>
-            <td>${lot.designation}</td>
-            <td>${lot.entrepriseId}</td>
-            <td>${lot.statut}</td>
-            <td>${lot.avancementPourcent}%</td>
-            <td>${formatCurrency(lot.montantMarcheHt)}</td>
-          </tr>`
+    const projectCard = renderCard(
+      "Projet",
+      `
+        ${renderKeyValueList([
+          { label: "Nom", value: viewModel.projectName },
+          { label: "Opération", value: viewModel.projectOperation },
+          { label: "Budget prévu HT", value: formatCurrency(viewModel.budgetPrevuHt) },
+        ])}
+        <div class="metric"><strong>Projet valide :</strong> ${renderBadge(
+          viewModel.isValid ? "Oui" : "Non",
+          viewModel.isValid ? "ok" : "ko"
+        )}</div>
+        <div class="quick-links">
+          ${viewModel.quickLinks
+            .map((link) =>
+              renderLink(link.href, {
+                label: link.label,
+              })
+            )
+            .join("")}
+        </div>
+      `
+    );
+
+    const kpiCard = renderCard(
+      "Indicateurs visuels",
+      `
+        <div class="grid">
+          <div class="kpi">
+            <div class="kpi-title">Lots</div>
+            <div class="kpi-value">${viewModel.lotCount}</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-title">Actions chantier</div>
+            <div class="kpi-value">${viewModel.actionCount}</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-title">Documents</div>
+            <div class="kpi-value">${viewModel.documentCount}</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-title">Erreurs</div>
+            <div class="kpi-value">${viewModel.errorCount}</div>
+          </div>
+        </div>
+      `
+    );
+
+    const summaryCard = renderCard(
+      "Chiffres clés",
+      renderKeyValueList([
+        { label: "Lots", value: viewModel.lotCount },
+        { label: "Intervenants", value: viewModel.intervenantCount },
+        { label: "Intervenants actifs", value: viewModel.activeIntervenantCount },
+        { label: "Actions chantier", value: viewModel.actionCount },
+        { label: "Documents", value: viewModel.documentCount },
+        { label: "Erreurs", value: viewModel.errorCount },
+        { label: "Warnings", value: viewModel.warningCount },
+      ])
+    );
+
+    const financeCard = renderCard(
+      "Finances",
+      renderKeyValueList([
+        { label: "Total marchés HT", value: formatCurrency(viewModel.totalMontantMarcheHt) },
+        { label: "Total marchés TTC", value: formatCurrency(viewModel.totalMontantMarcheTtc) },
+        { label: "Montant engagé HT", value: formatCurrency(viewModel.totalMontantEngageHt) },
+        { label: "Montant réglé HT", value: formatCurrency(viewModel.totalMontantRegleHt) },
+        { label: "Facturation TTC", value: formatCurrency(viewModel.totalFactureTtc) },
+        { label: "Facturation réglée", value: formatCurrency(viewModel.totalFactureReglee) },
+      ])
+    );
+
+    const lotsCard = renderCard(
+      "Lots",
+      renderTable(
+        [
+          { key: "id", header: "Lot_ID" },
+          { key: "designation", header: "Nom lot" },
+          { key: "entrepriseId", header: "Entreprise" },
+          { key: "statut", header: "Statut" },
+          {
+            key: "avancement",
+            header: "Avancement",
+            render: (value) => `${Number(value)}%`,
+          },
+          {
+            key: "montantHt",
+            header: "Montant HT",
+            render: (value) => formatCurrency(Number(value)),
+          },
+        ],
+        viewModel.lots,
+        "Aucun lot disponible."
       )
-      .join("");
+    );
 
-    const issuesRows = dashboard.topIssues
-      .map(
-        (issue) => `
-          <li><strong>${issue.severity}</strong> [${issue.scope}] — ${issue.message}</li>`
+    const issuesCard = renderCard(
+      "Top alertes",
+      renderTable(
+        [
+          {
+            key: "severity",
+            header: "Sévérité",
+            render: (value) => {
+              const severity = String(value);
+
+              if (severity === "error") {
+                return renderBadge("error", "ko");
+              }
+
+              if (severity === "warning") {
+                return renderBadge("warning", "warn");
+              }
+
+              return renderBadge(severity, "neutral");
+            },
+          },
+          { key: "scope", header: "Périmètre" },
+          { key: "message", header: "Message" },
+        ],
+        viewModel.topIssues,
+        "Aucune alerte."
       )
-      .join("");
+    );
 
-    const quickLinks = `
-      <div class="quick-links">
-        ${dashboard.quickLinks.map((link) => `<a href="${link.href}">${link.label}</a>`).join("\n        ")}
-      </div>`;
-
-    const visualKpis = dashboard.visualKpis
-      .map(
-        (kpi) => `
-        <div class="kpi">
-          <div class="kpi-title">${kpi.title}</div>
-          <div class="kpi-value">${kpi.value}</div>
-        </div>`
-      )
-      .join("");
-
-    const content = `<div class="card">
-      <h2>Projet</h2>
-      <div class="metric"><strong>Nom :</strong> ${summary.projectName}</div>
-      <div class="metric"><strong>Opération :</strong> ${summary.projectOperation}</div>
-      <div class="metric"><strong>Budget prévu HT :</strong> ${formatCurrency(summary.budgetPrevuHt)}</div>
-      <div class="metric"><strong>Projet valide :</strong> <span class="${validation.isValid ? "badge-ok" : "badge-ko"}">${validation.isValid ? "Oui" : "Non"}</span></div>
-      ${quickLinks}
-    </div>
-
-    <div class="card">
-      <h2>Indicateurs visuels</h2>
-      <div class="grid">${visualKpis}
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>Chiffres clés</h2>
-      <div class="grid">
-        <div class="metric"><strong>Lots :</strong> ${summary.lotCount}</div>
-        <div class="metric"><strong>Intervenants :</strong> ${summary.intervenantCount}</div>
-        <div class="metric"><strong>Intervenants actifs :</strong> ${summary.activeIntervenantCount}</div>
-        <div class="metric"><strong>Actions chantier :</strong> ${summary.actionCount}</div>
-        <div class="metric"><strong>Documents :</strong> ${summary.documentCount}</div>
-        <div class="metric"><strong>Erreurs :</strong> ${validation.errorCount}</div>
-        <div class="metric"><strong>Warnings :</strong> ${validation.warningCount}</div>
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>Finances</h2>
-      <div class="grid">
-        <div class="metric"><strong>Total marchés HT :</strong> ${formatCurrency(summary.totalMontantMarcheHt)}</div>
-        <div class="metric"><strong>Total marchés TTC :</strong> ${formatCurrency(summary.totalMontantMarcheTtc)}</div>
-        <div class="metric"><strong>Montant engagé HT :</strong> ${formatCurrency(summary.totalMontantEngageHt)}</div>
-        <div class="metric"><strong>Montant réglé HT :</strong> ${formatCurrency(summary.totalMontantRegleHt)}</div>
-        <div class="metric"><strong>Facturation TTC :</strong> ${formatCurrency(summary.totalFactureTtc)}</div>
-        <div class="metric"><strong>Facturation réglée :</strong> ${formatCurrency(summary.totalFactureReglee)}</div>
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>Lots</h2>
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Lot_ID</th>
-            <th>Nom lot</th>
-            <th>Entreprise</th>
-            <th>Statut</th>
-            <th>Avancement</th>
-            <th>Montant HT</th>
-          </tr>
-        </thead>
-        <tbody>${lotsRows}</tbody>
-      </table>
-    </div>
-
-    <div class="card">
-      <h2>Top alertes</h2>
-      <ul class="list">${issuesRows || "<li>Aucune alerte.</li>"}</ul>
-    </div>`;
+    const content = `
+      ${projectCard}
+      ${kpiCard}
+      ${summaryCard}
+      ${financeCard}
+      ${lotsCard}
+      ${issuesCard}
+    `;
 
     const html = renderPageLayout({
       title: "Tableau de bord projet",
