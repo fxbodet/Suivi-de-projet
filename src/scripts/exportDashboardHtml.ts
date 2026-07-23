@@ -1,9 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { loadProjectData } from "../import/loadProjectData";
-import { buildProjectSummary } from "../reporting/projectSummary";
-import { validateProjectData } from "../validation";
+import { getProjectContext } from "../services/projectService";
 
 function formatCurrency(value: number): string {
   return new Intl.NumberFormat("fr-FR", {
@@ -14,14 +12,10 @@ function formatCurrency(value: number): string {
 }
 
 function main() {
-  const basePath = path.resolve(process.cwd());
-  const outputDir = path.join(basePath, "output");
-  const outputFile = path.join(outputDir, "dashboard.html");
-
   try {
-    const data = loadProjectData(basePath);
-    const summary = buildProjectSummary(data);
-    const validation = validateProjectData(data);
+    const { basePath, data, summary, validation } = getProjectContext();
+    const outputDir = path.join(basePath, "output");
+    const outputFile = path.join(outputDir, "dashboard.html");
     const topIssues = validation.issues.slice(0, 10);
 
     const lotsRows = data.lots
