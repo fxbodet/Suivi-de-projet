@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 
+import { buildDashboardViewData } from "../services/dashboardService";
 import { getProjectContext } from "../services/projectService";
 
 function formatCurrency(value: number): string {
@@ -16,23 +17,23 @@ function main() {
     const { basePath, data, summary, validation } = getProjectContext();
     const outputDir = path.join(basePath, "output");
     const outputFile = path.join(outputDir, "dashboard.html");
-    const topIssues = validation.issues.slice(0, 10);
+    const dashboard = buildDashboardViewData({ data, summary, validation });
 
-    const lotsRows = data.lots
+    const lotsRows = dashboard.lots
       .map(
         (lot) => `
           <tr>
-            <td>${lot.Lot_ID}</td>
-            <td>${lot.Designation_Lot}</td>
-            <td>${lot.Entreprise_ID}</td>
-            <td>${lot.Statut_Lot}</td>
-            <td>${lot.Avancement_Pourcent}%</td>
-            <td>${formatCurrency(lot.Montant_Marche_HT)}</td>
+            <td>${lot.lotId}</td>
+            <td>${lot.designation}</td>
+            <td>${lot.entrepriseId}</td>
+            <td>${lot.statut}</td>
+            <td>${lot.avancementPourcent}%</td>
+            <td>${formatCurrency(lot.montantMarcheHt)}</td>
           </tr>`
       )
       .join("");
 
-    const issuesRows = topIssues
+    const issuesRows = dashboard.topIssues
       .map(
         (issue) => `
           <li><strong>${issue.severity}</strong> [${issue.scope}] — ${issue.message}</li>`
@@ -41,13 +42,18 @@ function main() {
 
     const quickLinks = `
       <div class="quick-links">
-        <a href="./lots.html">Voir les lots</a>
-        <a href="./validation.html">Voir la validation</a>
-        <a href="./intervenants.html">Voir les intervenants</a>
-        <a href="./actions.html">Voir les actions</a>
-        <a href="./documents.html">Voir les documents</a>
-        <a href="./finances.html">Voir les finances</a>
+        ${dashboard.quickLinks.map((link) => `<a href="${link.href}">${link.label}</a>`).join("\n        ")}
       </div>`;
+
+    const visualKpis = dashboard.visualKpis
+      .map(
+        (kpi) => `
+        <div class="kpi">
+          <div class="kpi-title">${kpi.title}</div>
+          <div class="kpi-value">${kpi.value}</div>
+        </div>`
+      )
+      .join("");
 
     const html = `<!DOCTYPE html>
 <html lang="fr">
@@ -81,23 +87,7 @@ function main() {
 
     <div class="card">
       <h2>Indicateurs visuels</h2>
-      <div class="grid">
-        <div class="kpi">
-          <div class="kpi-title">Lots</div>
-          <div class="kpi-value">${summary.lotCount}</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-title">Actions chantier</div>
-          <div class="kpi-value">${summary.actionCount}</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-title">Documents</div>
-          <div class="kpi-value">${summary.documentCount}</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-title">Erreurs</div>
-          <div class="kpi-value">${validation.errorCount}</div>
-        </div>
+      <div class="grid">${visualKpis}
       </div>
     </div>
 
