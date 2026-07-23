@@ -13,12 +13,10 @@ function formatCurrency(value: number): string {
 }
 
 function main() {
-  const basePath = path.resolve(process.cwd());
-  const outputDir = path.join(basePath, "output");
-  const outputFile = path.join(outputDir, "dashboard.html");
-
   try {
-    const { data, summary, validation } = getProjectContext(basePath);
+    const { basePath, data, summary, validation } = getProjectContext();
+    const outputDir = path.join(basePath, "output");
+    const outputFile = path.join(outputDir, "dashboard.html");
     const dashboard = buildDashboardViewData({ data, summary, validation });
 
     const lotsRows = dashboard.lots
