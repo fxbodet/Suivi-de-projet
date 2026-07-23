@@ -3,6 +3,8 @@ import path from "node:path";
 
 import { buildDashboardViewData } from "../services/dashboardService";
 import { getProjectContext } from "../services/projectService";
+import { renderPageLayout } from "../ui/layout";
+import { renderDashboardNavigation } from "../ui/navigation";
 
 function formatCurrency(value: number): string {
   return new Intl.NumberFormat("fr-FR", {
@@ -55,28 +57,7 @@ function main() {
       )
       .join("");
 
-    const html = `<!DOCTYPE html>
-<html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tableau de bord projet</title>
-    <link rel="stylesheet" href="./styles.css" />
-  </head>
-  <body>
-    <h1>Tableau de bord projet</h1>
-
-    <nav class="nav">
-      <a href="./dashboard.html">Dashboard</a>
-      <a href="./lots.html">Lots</a>
-      <a href="./validation.html">Validation</a>
-      <a href="./intervenants.html">Intervenants</a>
-      <a href="./actions.html">Actions</a>
-      <a href="./documents.html">Documents</a>
-      <a href="./finances.html">Finances</a>
-    </nav>
-
-    <div class="card">
+    const content = `<div class="card">
       <h2>Projet</h2>
       <div class="metric"><strong>Nom :</strong> ${summary.projectName}</div>
       <div class="metric"><strong>Opération :</strong> ${summary.projectOperation}</div>
@@ -136,9 +117,13 @@ function main() {
     <div class="card">
       <h2>Top alertes</h2>
       <ul class="list">${issuesRows || "<li>Aucune alerte.</li>"}</ul>
-    </div>
-  </body>
-</html>`;
+    </div>`;
+
+    const html = renderPageLayout({
+      title: "Tableau de bord projet",
+      navigation: renderDashboardNavigation("dashboard"),
+      content,
+    });
 
     fs.mkdirSync(outputDir, { recursive: true });
     fs.writeFileSync(outputFile, html, "utf-8");
