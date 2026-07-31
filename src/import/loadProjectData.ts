@@ -20,16 +20,33 @@ import {
   Situation,
   SuiviFinancier,
 } from "../domain/types";
-import { parseTsv, toNumber, toYesNo } from "./parseTsv";
+import { TsvRow, parseTsv, toNumber, toYesNo } from "./parseTsv";
 
-function readTsvFile(basePath: string, relativePath: string) {
+function readTsvFile(basePath: string, relativePath: string): TsvRow[] {
   const fullPath = path.join(basePath, relativePath);
-  const content = fs.readFileSync(fullPath, "utf-8");
-  return parseTsv(content);
+  try {
+    const content = fs.readFileSync(fullPath, "utf-8");
+    return parseTsv(content);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    throw new Error(`Impossible de lire le fichier TSV requis : ${relativePath} — ${msg}`);
+  }
+}
+
+function loadEntity<T>(basePath: string, relativePath: string, mapper: (row: TsvRow) => T): T[] {
+  try {
+    return readTsvFile(basePath, relativePath).map(mapper);
+  } catch (err) {
+    if (err instanceof Error && err.message.startsWith("Impossible de lire")) {
+      throw err;
+    }
+    const msg = err instanceof Error ? err.message : String(err);
+    throw new Error(`Erreur lors du chargement de ${relativePath} : ${msg}`);
+  }
 }
 
 export function loadProjectData(basePath: string): ProjectDataBundle {
-  const projet: Projet[] = readTsvFile(basePath, "data/projet.tsv").map((row) => ({
+  const projet: Projet[] = loadEntity(basePath, "data/projet.tsv", (row) => ({
     Projet_ID: row.Projet_ID,
     Nom_Projet: row.Nom_Projet,
     Operation: row.Operation,
@@ -51,7 +68,7 @@ export function loadProjectData(basePath: string): ProjectDataBundle {
     Commentaire: row.Commentaire,
   }));
 
-  const phases_mop: PhaseMop[] = readTsvFile(basePath, "data/phases_mop.tsv").map((row) => ({
+  const phases_mop: PhaseMop[] = loadEntity(basePath, "data/phases_mop.tsv", (row) => ({
     Phase_ID: row.Phase_ID,
     Projet_ID: row.Projet_ID,
     Code_Phase: row.Code_Phase,
@@ -68,7 +85,7 @@ export function loadProjectData(basePath: string): ProjectDataBundle {
     Commentaire: row.Commentaire,
   }));
 
-  const lots: Lot[] = readTsvFile(basePath, "data/lots.tsv").map((row) => ({
+  const lots: Lot[] = loadEntity(basePath, "data/lots.tsv", (row) => ({
     Lot_ID: row.Lot_ID,
     Projet_ID: row.Projet_ID,
     Ensemble: row.Ensemble,
@@ -88,7 +105,7 @@ export function loadProjectData(basePath: string): ProjectDataBundle {
     Commentaire: row.Commentaire,
   }));
 
-  const planning: PlanningTask[] = readTsvFile(basePath, "data/planning.tsv").map((row) => ({
+  const planning: PlanningTask[] = loadEntity(basePath, "data/planning.tsv", (row) => ({
     Tache_ID: row.Tache_ID,
     Projet_ID: row.Projet_ID,
     Phase_ID: row.Phase_ID,
@@ -113,7 +130,7 @@ export function loadProjectData(basePath: string): ProjectDataBundle {
     Commentaire: row.Commentaire,
   }));
 
-  const intervenants: Intervenant[] = readTsvFile(basePath, "data/intervenants.tsv").map((row) => ({
+  const intervenants: Intervenant[] = loadEntity(basePath, "data/intervenants.tsv", (row) => ({
     Intervenant_ID: row.Intervenant_ID,
     Projet_ID: row.Projet_ID,
     Type_Intervenant: row.Type_Intervenant,
@@ -130,7 +147,7 @@ export function loadProjectData(basePath: string): ProjectDataBundle {
     Commentaire: row.Commentaire,
   }));
 
-  const marches: Marche[] = readTsvFile(basePath, "data/marches.tsv").map((row) => ({
+  const marches: Marche[] = loadEntity(basePath, "data/marches.tsv", (row) => ({
     Marche_ID: row.Marche_ID,
     Projet_ID: row.Projet_ID,
     Lot_ID: row.Lot_ID,
@@ -148,7 +165,7 @@ export function loadProjectData(basePath: string): ProjectDataBundle {
     Commentaire: row.Commentaire,
   }));
 
-  const cctp: ArticleCctp[] = readTsvFile(basePath, "data/cctp.tsv").map((row) => ({
+  const cctp: ArticleCctp[] = loadEntity(basePath, "data/cctp.tsv", (row) => ({
     Article_ID: row.Article_ID,
     Projet_ID: row.Projet_ID,
     Lot_ID: row.Lot_ID,
@@ -162,7 +179,7 @@ export function loadProjectData(basePath: string): ProjectDataBundle {
     Actif: toYesNo(row.Actif),
   }));
 
-  const dqe: LigneDqe[] = readTsvFile(basePath, "data/dqe.tsv").map((row) => ({
+  const dqe: LigneDqe[] = loadEntity(basePath, "data/dqe.tsv", (row) => ({
     Ligne_DQE_ID: row.Ligne_DQE_ID,
     Projet_ID: row.Projet_ID,
     Lot_ID: row.Lot_ID,
@@ -179,7 +196,7 @@ export function loadProjectData(basePath: string): ProjectDataBundle {
     Commentaire: row.Commentaire,
   }));
 
-  const situations: Situation[] = readTsvFile(basePath, "data/situations.tsv").map((row) => ({
+  const situations: Situation[] = loadEntity(basePath, "data/situations.tsv", (row) => ({
     Situation_ID: row.Situation_ID,
     Projet_ID: row.Projet_ID,
     Lot_ID: row.Lot_ID,
@@ -197,7 +214,7 @@ export function loadProjectData(basePath: string): ProjectDataBundle {
     Commentaire: row.Commentaire,
   }));
 
-  const chantier_cr: CompteRenduChantier[] = readTsvFile(basePath, "data/chantier_cr.tsv").map((row) => ({
+  const chantier_cr: CompteRenduChantier[] = loadEntity(basePath, "data/chantier_cr.tsv", (row) => ({
     CR_ID: row.CR_ID,
     Projet_ID: row.Projet_ID,
     Numero_CR: toNumber(row.Numero_CR),
@@ -213,7 +230,7 @@ export function loadProjectData(basePath: string): ProjectDataBundle {
     Lien_PDF: row.Lien_PDF,
   }));
 
-  const actions_chantier: ActionChantier[] = readTsvFile(basePath, "data/actions_chantier.tsv").map((row) => ({
+  const actions_chantier: ActionChantier[] = loadEntity(basePath, "data/actions_chantier.tsv", (row) => ({
     Action_ID: row.Action_ID,
     CR_ID: row.CR_ID,
     Projet_ID: row.Projet_ID,
@@ -228,7 +245,7 @@ export function loadProjectData(basePath: string): ProjectDataBundle {
     Commentaire: row.Commentaire,
   }));
 
-  const facturation_client: FactureClient[] = readTsvFile(basePath, "data/facturation_client.tsv").map((row) => ({
+  const facturation_client: FactureClient[] = loadEntity(basePath, "data/facturation_client.tsv", (row) => ({
     Facture_ID: row.Facture_ID,
     Projet_ID: row.Projet_ID,
     Client: row.Client,
@@ -247,7 +264,7 @@ export function loadProjectData(basePath: string): ProjectDataBundle {
     Commentaire: row.Commentaire,
   }));
 
-  const suivi_financier: SuiviFinancier[] = readTsvFile(basePath, "data/suivi_financier.tsv").map((row) => ({
+  const suivi_financier: SuiviFinancier[] = loadEntity(basePath, "data/suivi_financier.tsv", (row) => ({
     Suivi_ID: row.Suivi_ID,
     Projet_ID: row.Projet_ID,
     Lot_ID: row.Lot_ID,
@@ -263,7 +280,7 @@ export function loadProjectData(basePath: string): ProjectDataBundle {
     Ecart_Marche_Realise_HT: toNumber(row.Ecart_Marche_Realise_HT),
   }));
 
-  const documents: DocumentProjet[] = readTsvFile(basePath, "data/documents.tsv").map((row) => ({
+  const documents: DocumentProjet[] = loadEntity(basePath, "data/documents.tsv", (row) => ({
     Document_ID: row.Document_ID,
     Projet_ID: row.Projet_ID,
     Phase_ID: row.Phase_ID,
@@ -277,7 +294,7 @@ export function loadProjectData(basePath: string): ProjectDataBundle {
     Statut_Validation: row.Statut_Validation,
   }));
 
-  const ccap: ClauseCcap[] = readTsvFile(basePath, "data/ccap.tsv").map((row) => ({
+  const ccap: ClauseCcap[] = loadEntity(basePath, "data/ccap.tsv", (row) => ({
     Clause_ID: row.Clause_ID,
     Projet_ID: row.Projet_ID,
     Lot_ID: row.Lot_ID,
@@ -288,13 +305,23 @@ export function loadProjectData(basePath: string): ProjectDataBundle {
     Observation: row.Observation,
   }));
 
-  const tableau_de_bord: IndicateurTableauDeBord[] = readTsvFile(basePath, "data/tableau_de_bord.tsv").map((row) => ({
-    Indicateur: row.Indicateur,
-    Valeur: row.Valeur === "" ? "" : Number.isNaN(Number(row.Valeur)) ? row.Valeur : toNumber(row.Valeur),
-    Unite: row.Unite,
-    Categorie: row.Categorie,
-    Commentaire: row.Commentaire,
-  }));
+  const tableau_de_bord: IndicateurTableauDeBord[] = loadEntity(basePath, "data/tableau_de_bord.tsv", (row) => {
+    let valeur: number | string = "";
+    if (row.Valeur !== "") {
+      try {
+        valeur = toNumber(row.Valeur);
+      } catch {
+        valeur = row.Valeur;
+      }
+    }
+    return {
+      Indicateur: row.Indicateur,
+      Valeur: valeur,
+      Unite: row.Unite,
+      Categorie: row.Categorie,
+      Commentaire: row.Commentaire,
+    };
+  });
 
   return {
     projet,

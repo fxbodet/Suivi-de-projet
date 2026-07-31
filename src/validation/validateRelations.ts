@@ -1,10 +1,6 @@
-import { ProjectDataBundle } from "../domain/types";
+import { ProjectDataBundle, ValidationIssue } from "../domain/types";
 
-export interface ValidationIssue {
-  scope: string;
-  message: string;
-  severity: "error" | "warning";
-}
+export type { ValidationIssue };
 
 function existsInSet(value: string, set: Set<string>): boolean {
   if (!value) {

@@ -1,5 +1,4 @@
-import { ProjectDataBundle } from "../domain/types";
-import { ValidationIssue } from "./validateRelations";
+import { ProjectDataBundle, ValidationIssue } from "../domain/types";
 
 function isValidDate(value: string): boolean {
   if (!value) {
@@ -37,6 +36,18 @@ export function validatePlanning(data: ProjectDataBundle): ValidationIssue[] {
       issues.push({
         scope: `phases_mop:${item.Phase_ID}`,
         message: `Date_Debut_Prevue postérieure à Date_Fin_Prevue`,
+        severity: "error",
+      });
+    }
+
+    if (
+      item.Date_Debut_Reelle &&
+      item.Date_Fin_Reelle &&
+      item.Date_Debut_Reelle > item.Date_Fin_Reelle
+    ) {
+      issues.push({
+        scope: `phases_mop:${item.Phase_ID}`,
+        message: `Date_Debut_Reelle postérieure à Date_Fin_Reelle`,
         severity: "error",
       });
     }

@@ -285,3 +285,16 @@ export interface ProjectDataBundle {
   ccap: ClauseCcap[];
   tableau_de_bord: IndicateurTableauDeBord[];
 }
+
+export interface ValidationIssue {
+  scope: string;
+  message: string;
+  severity: "error" | "warning";
+}
+
+export interface ValidationReport {
+  issues: ValidationIssue[];
+  errorCount: number;
+  warningCount: number;
+  isValid: boolean;
+}

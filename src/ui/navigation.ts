@@ -1,4 +1,5 @@
 export type DashboardNavigationPage =
+  | "accueil"
   | "dashboard"
   | "lots"
   | "validation"
@@ -14,6 +15,7 @@ interface NavigationLink {
 }
 
 const DASHBOARD_NAVIGATION_LINKS: NavigationLink[] = [
+  { key: "accueil", href: "./index.html", label: "Accueil" },
   { key: "dashboard", href: "./dashboard.html", label: "Dashboard" },
   { key: "lots", href: "./lots.html", label: "Lots" },
   { key: "validation", href: "./validation.html", label: "Validation" },
@@ -33,7 +35,7 @@ export function renderDashboardNavigation(activePage?: DashboardNavigationPage):
     return `      <a ${attributes.join(" ")}>${link.label}</a>`;
   }).join("\n");
 
-  return `<nav class="nav">
+  return `<nav class="nav" aria-label="Navigation principale">
 ${links}
 </nav>`;
 }

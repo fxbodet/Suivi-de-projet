@@ -2,14 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 import { loadProjectData } from "../import/loadProjectData";
-
-function escapeCsv(value: string | number): string {
-  const text = String(value ?? "");
-  if (text.includes(";") || text.includes("\n") || text.includes('"')) {
-    return `"${text.replaceAll('"', '""')}"`;
-  }
-  return text;
-}
+import { escapeCsv } from "../utils/csv";
 
 function main() {
   const basePath = path.resolve(process.cwd());

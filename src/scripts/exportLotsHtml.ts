@@ -2,20 +2,21 @@ import fs from "node:fs";
 import path from "node:path";
 
 import { loadProjectData } from "../import/loadProjectData";
+import { renderBadge, renderCard, renderTable } from "../ui/components";
+import { formatCurrency } from "../ui/formatters";
+import { renderPageLayout } from "../ui/layout";
+import { renderDashboardNavigation } from "../ui/navigation";
 
-function lotStatusClass(status: string): string {
-  const normalized = status.toLowerCase();
-  if (normalized.includes("termin") || normalized.includes("valid")) return "status status-ok";
-  if (normalized.includes("attente") || normalized.includes("progress") || normalized.includes("cours")) return "status status-warn";
-  return "status status-ko";
-}
+const LOT_STATUS_MAP: Record<string, "ok" | "warn" | "ko" | "neutral"> = {
+  TERMINE: "ok",
+  EN_COURS: "warn",
+  PREVU: "neutral",
+  BLOQUE: "ko",
+  ANNULE: "neutral",
+};
 
-function formatCurrency(value: number): string {
-  return new Intl.NumberFormat("fr-FR", {
-    style: "currency",
-    currency: "EUR",
-    maximumFractionDigits: 2,
-  }).format(value);
+function lotStatusTone(status: string): "ok" | "warn" | "ko" | "neutral" {
+  return LOT_STATUS_MAP[status.toUpperCase()] ?? "ko";
 }
 
 function main() {
@@ -27,61 +28,44 @@ function main() {
     const data = loadProjectData(basePath);
     const sortedLots = [...data.lots].sort((a, b) => b.Montant_Marche_HT - a.Montant_Marche_HT);
 
-    const rows = sortedLots
-      .map(
-        (lot) => `
-          <tr>
-            <td>${lot.Lot_ID}</td>
-            <td>${lot.Designation_Lot}</td>
-            <td>${lot.Entreprise_ID}</td>
-            <td><span class="${lotStatusClass(lot.Statut_Lot)}">${lot.Statut_Lot}</span></td>
-            <td>${lot.Avancement_Pourcent}%</td>
-            <td>${formatCurrency(lot.Montant_Marche_HT)}</td>
-            <td>${formatCurrency(lot.Montant_Marche_TTC)}</td>
-          </tr>`
+    const lotsCard = renderCard(
+      "Liste des lots",
+      renderTable(
+        [
+          { key: "Lot_ID", header: "Lot_ID" },
+          { key: "Designation_Lot", header: "Nom lot" },
+          { key: "Entreprise_ID", header: "Entreprise" },
+          {
+            key: "Statut_Lot",
+            header: "Statut",
+            render: (value) => renderBadge(String(value), lotStatusTone(String(value))),
+          },
+          {
+            key: "Avancement_Pourcent",
+            header: "Avancement",
+            render: (value) => `${Number(value)}%`,
+          },
+          {
+            key: "Montant_Marche_HT",
+            header: "Montant HT",
+            render: (value) => formatCurrency(Number(value)),
+          },
+          {
+            key: "Montant_Marche_TTC",
+            header: "Montant TTC",
+            render: (value) => formatCurrency(Number(value)),
+          },
+        ],
+        sortedLots,
+        "Aucun lot disponible."
       )
-      .join("");
+    );
 
-    const html = `<!DOCTYPE html>
-<html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Liste des lots</title>
-    <link rel="stylesheet" href="./styles.css" />
-  </head>
-  <body>
-    <h1>Liste des lots</h1>
-
-    <nav class="nav">
-      <a href="./index.html">Accueil</a>
-      <a href="./dashboard.html">Dashboard</a>
-      <a href="./lots.html">Lots</a>
-      <a href="./validation.html">Validation</a>
-      <a href="./intervenants.html">Intervenants</a>
-      <a href="./actions.html">Actions</a>
-      <a href="./documents.html">Documents</a>
-      <a href="./finances.html">Finances</a>
-    </nav>
-
-    <div class="card">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Lot_ID</th>
-            <th>Nom lot</th>
-            <th>Entreprise</th>
-            <th>Statut</th>
-            <th>Avancement</th>
-            <th>Montant HT</th>
-            <th>Montant TTC</th>
-          </tr>
-        </thead>
-        <tbody>${rows}</tbody>
-      </table>
-    </div>
-  </body>
-</html>`;
+    const html = renderPageLayout({
+      title: "Liste des lots",
+      navigation: renderDashboardNavigation("lots"),
+      content: lotsCard,
+    });
 
     fs.mkdirSync(outputDir, { recursive: true });
     fs.writeFileSync(outputFile, html, "utf-8");

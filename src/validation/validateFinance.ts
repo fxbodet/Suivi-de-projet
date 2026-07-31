@@ -1,5 +1,4 @@
-import { ProjectDataBundle } from "../domain/types";
-import { ValidationIssue } from "./validateRelations";
+import { ProjectDataBundle, ValidationIssue } from "../domain/types";
 
 function nearlyEqual(a: number, b: number, epsilon = 0.01): boolean {
   return Math.abs(a - b) <= epsilon;
@@ -23,6 +22,17 @@ export function validateFinance(data: ProjectDataBundle): ValidationIssue[] {
         scope: `lots:${item.Lot_ID}`,
         message: `Avancement_Pourcent hors bornes: ${item.Avancement_Pourcent}`,
         severity: "error",
+      });
+    }
+  });
+
+  data.marches.forEach((item) => {
+    const expectedActualise = item.Montant_Initial_HT + item.Montant_Avenants_HT;
+    if (item.Montant_Actualise_HT !== 0 && !nearlyEqual(item.Montant_Actualise_HT, expectedActualise)) {
+      issues.push({
+        scope: `marches:${item.Marche_ID}`,
+        message: `Montant_Actualise_HT incohérent. Attendu ${expectedActualise} (Initial + Avenants), obtenu ${item.Montant_Actualise_HT}`,
+        severity: "warning",
       });
     }
   });
@@ -86,6 +96,14 @@ export function validateFinance(data: ProjectDataBundle): ValidationIssue[] {
         scope: `situations:${item.Situation_ID}`,
         message: `Montant_Cumule_HT inférieur à Montant_Periode_HT`,
         severity: "error",
+      });
+    }
+
+    if (item.Validee === "Oui" && !item.Date_Validation) {
+      issues.push({
+        scope: `situations:${item.Situation_ID}`,
+        message: `Situation validée (Validee=Oui) sans Date_Validation renseignée`,
+        severity: "warning",
       });
     }
   });

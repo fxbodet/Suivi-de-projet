@@ -10,16 +10,9 @@ import {
   renderLink,
   renderTable,
 } from "../ui/components";
+import { formatCurrency } from "../ui/formatters";
 import { renderPageLayout } from "../ui/layout";
 import { renderDashboardNavigation } from "../ui/navigation";
-
-function formatCurrency(value: number): string {
-  return new Intl.NumberFormat("fr-FR", {
-    style: "currency",
-    currency: "EUR",
-    maximumFractionDigits: 2,
-  }).format(value);
-}
 
 function main() {
   const basePath = path.resolve(process.cwd());

@@ -51,7 +51,7 @@ function parseDate(value: string): Date | null {
 function isClosedStatus(value: string): boolean {
   const normalized = normalizeString(value).toLowerCase();
 
-  return ["clos", "cloture", "clôturé", "cloturé", "closed", "done", "termine", "terminé"].includes(
+  return ["clos", "cloture", "clôturé", "cloturé", "closed", "done", "termine", "terminé", "annule", "annulé", "cancelled"].includes(
     normalized
   );
 }

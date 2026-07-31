@@ -47,11 +47,17 @@ export function toNumber(value: string | undefined): number {
 }
 
 export function toYesNo(value: string | undefined): "Oui" | "Non" {
-  if (value === "Oui" || value === "Non") {
-    return value;
+  if (!value || value === "") {
+    return "Non";
   }
 
-  if (!value || value === "") {
+  const lower = value.toLowerCase();
+
+  if (lower === "oui") {
+    return "Oui";
+  }
+
+  if (lower === "non") {
     return "Non";
   }
 
