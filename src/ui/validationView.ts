@@ -1,4 +1,4 @@
-import { ValidationIssue } from "../validation/validateRelations";
+import { ValidationIssue } from "../domain/types";
 import { divider } from "./formatters";
 
 function groupIssuesByScope(issues: ValidationIssue[]): Map<string, ValidationIssue[]> {

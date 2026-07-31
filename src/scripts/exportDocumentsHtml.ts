@@ -2,12 +2,27 @@ import fs from "node:fs";
 import path from "node:path";
 
 import { loadProjectData } from "../import/loadProjectData";
+import { renderBadge, renderCard, renderTable } from "../ui/components";
+import { renderPageLayout } from "../ui/layout";
+import { renderDashboardNavigation } from "../ui/navigation";
 
-function documentStatusClass(status: string): string {
+const DOCUMENT_STATUS_MAP: Record<string, "ok" | "warn" | "ko" | "neutral"> = {
+  VALIDE: "ok",
+  APPROUVE: "ok",
+  DIFFUSE: "ok",
+  EN_ATTENTE: "warn",
+  EN_REVUE: "warn",
+  EN_COURS: "warn",
+  REFUSE: "ko",
+};
+
+function documentStatusTone(status: string): "ok" | "warn" | "ko" | "neutral" {
+  const upper = status.toUpperCase().replace(/\s+/g, "_");
+  if (DOCUMENT_STATUS_MAP[upper]) return DOCUMENT_STATUS_MAP[upper];
   const normalized = status.toLowerCase();
-  if (normalized.includes("valid") || normalized.includes("approuv") || normalized.includes("diffus")) return "status status-ok";
-  if (normalized.includes("attente") || normalized.includes("revue") || normalized.includes("cours")) return "status status-warn";
-  return "status status-ko";
+  if (normalized.includes("valid") || normalized.includes("approuv") || normalized.includes("diffus")) return "ok";
+  if (normalized.includes("attente") || normalized.includes("revue") || normalized.includes("cours")) return "warn";
+  return "neutral";
 }
 
 function main() {
@@ -18,60 +33,32 @@ function main() {
   try {
     const data = loadProjectData(basePath);
 
-    const rows = data.documents
-      .map(
-        (document) => `
-          <tr>
-            <td>${document.Document_ID}</td>
-            <td>${document.Lot_ID}</td>
-            <td>${document.Reference}</td>
-            <td>${document.Type_Document}</td>
-            <td>${document.Date_Document}</td>
-            <td>${document.Version}</td>
-            <td><span class="${documentStatusClass(document.Statut_Validation)}">${document.Statut_Validation}</span></td>
-          </tr>`
+    const documentsCard = renderCard(
+      "Documents projet",
+      renderTable(
+        [
+          { key: "Document_ID", header: "Document_ID" },
+          { key: "Lot_ID", header: "Lot_ID" },
+          { key: "Reference", header: "Nom" },
+          { key: "Type_Document", header: "Type" },
+          { key: "Date_Document", header: "Date" },
+          { key: "Version", header: "Version" },
+          {
+            key: "Statut_Validation",
+            header: "Statut",
+            render: (value) => renderBadge(String(value), documentStatusTone(String(value))),
+          },
+        ],
+        data.documents,
+        "Aucun document disponible."
       )
-      .join("");
+    );
 
-    const html = `<!DOCTYPE html>
-<html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Documents projet</title>
-    <link rel="stylesheet" href="./styles.css" />
-  </head>
-  <body>
-    <h1>Documents projet</h1>
-
-    <nav class="nav">
-      <a href="./dashboard.html">Dashboard</a>
-      <a href="./lots.html">Lots</a>
-      <a href="./validation.html">Validation</a>
-      <a href="./intervenants.html">Intervenants</a>
-      <a href="./actions.html">Actions</a>
-      <a href="./documents.html">Documents</a>
-      <a href="./finances.html">Finances</a>
-    </nav>
-
-    <div class="card">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Document_ID</th>
-            <th>Lot_ID</th>
-            <th>Nom</th>
-            <th>Type</th>
-            <th>Date</th>
-            <th>Version</th>
-            <th>Statut</th>
-          </tr>
-        </thead>
-        <tbody>${rows}</tbody>
-      </table>
-    </div>
-  </body>
-</html>`;
+    const html = renderPageLayout({
+      title: "Documents projet",
+      navigation: renderDashboardNavigation("documents"),
+      content: documentsCard,
+    });
 
     fs.mkdirSync(outputDir, { recursive: true });
     fs.writeFileSync(outputFile, html, "utf-8");

@@ -1,16 +1,12 @@
-import { ProjectDataBundle } from "../domain/types";
+import { ProjectDataBundle, ValidationReport } from "../domain/types";
 import { validateDuplicates } from "./validateDuplicates";
 import { validateEnums } from "./validateEnums";
 import { validateFinance } from "./validateFinance";
 import { validatePlanning } from "./validatePlanning";
-import { ValidationIssue, validateRelations } from "./validateRelations";
+import { validateRelations } from "./validateRelations";
 
-export interface ValidationReport {
-  issues: ValidationIssue[];
-  errorCount: number;
-  warningCount: number;
-  isValid: boolean;
-}
+export type { ValidationReport };
+export type { ValidationIssue } from "../domain/types";
 
 export function validateProjectData(data: ProjectDataBundle): ValidationReport {
   const issues = [

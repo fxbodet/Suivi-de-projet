@@ -1,7 +1,11 @@
 import fs from "node:fs";
 import path from "node:path";
 
+import { ValidationIssue } from "../domain/types";
 import { loadProjectData } from "../import/loadProjectData";
+import { renderBadge, renderCard, renderTable } from "../ui/components";
+import { renderPageLayout } from "../ui/layout";
+import { renderDashboardNavigation } from "../ui/navigation";
 import { validateProjectData } from "../validation";
 
 function main() {
@@ -15,50 +19,38 @@ function main() {
     const errors = validation.issues.filter((issue) => issue.severity === "error");
     const warnings = validation.issues.filter((issue) => issue.severity === "warning");
 
-    const renderItems = (items: typeof validation.issues) =>
-      items.length === 0
-        ? "<li>Aucune entrée.</li>"
-        : items
-            .map(
-              (issue) => `
-                <li>
-                  <strong>[${issue.scope}]</strong> ${issue.message}
-                </li>`
-            )
-            .join("");
+    const issueColumns = [
+      { key: "scope" as keyof ValidationIssue, header: "Périmètre" },
+      { key: "message" as keyof ValidationIssue, header: "Message" },
+    ];
 
-    const html = `<!DOCTYPE html>
-<html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Validation projet</title>
-    <link rel="stylesheet" href="./styles.css" />
-  </head>
-  <body>
-    <h1>Validation projet</h1>
+    const errorsCard = renderCard(
+      `Erreurs (${errors.length})`,
+      renderTable(issueColumns, errors, "Aucune erreur.")
+    );
 
-    <nav class="nav">
-      <a href="./dashboard.html">Dashboard</a>
-      <a href="./lots.html">Lots</a>
-      <a href="./validation.html">Validation</a>
-      <a href="./intervenants.html">Intervenants</a>
-      <a href="./actions.html">Actions</a>
-      <a href="./documents.html">Documents</a>
-      <a href="./finances.html">Finances</a>
-    </nav>
+    const warningsCard = renderCard(
+      `Warnings (${warnings.length})`,
+      renderTable(issueColumns, warnings, "Aucun warning.")
+    );
 
-    <div class="card errors">
-      <h2>Erreurs (${errors.length})</h2>
-      <ul class="list">${renderItems(errors)}</ul>
-    </div>
+    const statusBadge = renderBadge(
+      validation.isValid ? "Valide" : "Invalide",
+      validation.isValid ? "ok" : "ko"
+    );
 
-    <div class="card warnings">
-      <h2>Warnings (${warnings.length})</h2>
-      <ul class="list">${renderItems(warnings)}</ul>
-    </div>
-  </body>
-</html>`;
+    const summaryCard = renderCard(
+      "Résumé validation",
+      `<p>Statut : ${statusBadge}</p><p>Erreurs : ${validation.errorCount} — Warnings : ${validation.warningCount}</p>`
+    );
+
+    const content = `${summaryCard}${errorsCard}${warningsCard}`;
+
+    const html = renderPageLayout({
+      title: "Validation projet",
+      navigation: renderDashboardNavigation("validation"),
+      content,
+    });
 
     fs.mkdirSync(outputDir, { recursive: true });
     fs.writeFileSync(outputFile, html, "utf-8");

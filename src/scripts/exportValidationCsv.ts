@@ -1,17 +1,10 @@
 import fs from "node:fs";
 import path from "node:path";
 
+import { ValidationIssue } from "../domain/types";
 import { loadProjectData } from "../import/loadProjectData";
+import { escapeCsv } from "../utils/csv";
 import { validateProjectData } from "../validation";
-import { ValidationIssue } from "../validation/validateRelations";
-
-function escapeCsv(value: string | number): string {
-  const text = String(value ?? "");
-  if (text.includes(";") || text.includes("\n") || text.includes('"')) {
-    return `"${text.replaceAll('"', '""')}"`;
-  }
-  return text;
-}
 
 function toCsv(issues: ValidationIssue[]): string {
   const headers = ["severity", "scope", "message"];

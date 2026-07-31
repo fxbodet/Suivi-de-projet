@@ -1,5 +1,4 @@
-import { ProjectDataBundle } from "../domain/types";
-import { ValidationIssue } from "./validateRelations";
+import { ProjectDataBundle, ValidationIssue } from "../domain/types";
 
 function findDuplicates(values: string[]): string[] {
   const counts = new Map<string, number>();
