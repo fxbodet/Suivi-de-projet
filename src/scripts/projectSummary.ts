@@ -25,8 +25,7 @@ function main() {
     console.log("");
     console.log("=== Synthèse projet ===");
     console.log(`Nom du projet         : ${summary.projectName}`);
-    console.log(`Statut                : ${summary.projectStatus}`);
-    console.log(`Type                  : ${summary.projectType}`);
+    console.log(`Opération             : ${summary.projectOperation}`);
     console.log(`Budget prévu HT       : ${formatCurrency(summary.budgetPrevuHt)}`);
     console.log("");
 

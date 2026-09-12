@@ -112,7 +112,7 @@ export function renderHtmlList(items: string[], emptyMessage = "Aucune donnée."
   return `<ul class="list">${items.map((item) => `<li>${item}</li>`).join("")}</ul>`;
 }
 
-export function renderTable<T extends Record<string, unknown>>(
+export function renderTable<T extends object>(
   columns: TableColumn<T>[],
   rows: T[],
   emptyMessage = "Aucune donnée."
